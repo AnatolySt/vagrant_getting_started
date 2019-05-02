@@ -1,0 +1,30 @@
+version: '2'
+services:
+  postgres:
+    environment:
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=sample_rails_app_development
+    image: postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - 5431:5432
+
+  app:
+    image: anatolystupin/sample_rails_app
+    environment:
+      - DB_HOST=postgres
+    ports:
+      - "3000"
+    depends_on:
+      - postgres
+
+  webserver:
+    build: ./nginx
+    ports:
+      - "80:80"
+    links:
+      - app:app
+
+volumes:
+  postgres:
